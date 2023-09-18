@@ -1,20 +1,22 @@
 package com.sparta.actionboss.domain.post.service;
 
-import com.sparta.actionboss.domain.auth.entity.User;
-import com.sparta.actionboss.domain.auth.entity.UserRoleEnum;
-import com.sparta.actionboss.domain.post.dto.PostRequestDto;
-import com.sparta.actionboss.domain.post.dto.PostResponseDto;
-import com.sparta.actionboss.domain.post.entity.Comment;
-import com.sparta.actionboss.domain.post.entity.Image;
-import com.sparta.actionboss.domain.post.entity.Post;
+import com.sparta.actionboss.domain.notification.service.NotificationService;
+import com.sparta.actionboss.domain.post.entity.*;
+import com.sparta.actionboss.domain.user.entity.User;
+import com.sparta.actionboss.domain.user.type.UserRoleEnum;
+import com.sparta.actionboss.domain.post.dto.request.PostRequestDto;
+import com.sparta.actionboss.domain.post.dto.response.PostResponseDto;
 import com.sparta.actionboss.domain.post.repository.AgreeRepository;
 import com.sparta.actionboss.domain.post.repository.DoneRepository;
 import com.sparta.actionboss.domain.post.repository.ImageRepository;
 import com.sparta.actionboss.domain.post.repository.PostRepository;
+import com.sparta.actionboss.global.exception.AgreeException;
+import com.sparta.actionboss.global.exception.DoneException;
 import com.sparta.actionboss.global.exception.PostException;
 import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.security.UserDetailsImpl;
+import com.sparta.actionboss.global.util.EmailUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,13 +42,16 @@ public class PostService {
     private String s3Url;
 
     private final S3Service s3Service;
+    private final EmailUtil emailUtil;
     private final PostRepository postRepository;
     private final DoneRepository doneRepository;
     private final AgreeRepository agreeRepository;
     private final ImageRepository imageRepository;
     private final CommentService commentService;
+    private final NotificationService notificationService;
 
     private static final int MAXIMUM_IMAGES = 3;    // 이미지 업로드 최대 개수
+    private static final int MAXIMUM_DONE = 5;    // 해결했어요 최대 개수
 
     // 게시글 작성
     @Transactional
@@ -191,5 +196,57 @@ public class PostService {
             userDetails = (UserDetailsImpl) authentication.getPrincipal();
         }
         return userDetails;
+    }
+
+    //'나도 불편해요' 버튼
+    public CommonResponse agreePost(Long postId, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new AgreeException(ClientErrorCode.NO_POST));
+
+        if (!agreeRepository.existsAgreeByUserAndPost(user, post)) {
+            Agree agree = new Agree(user, post);
+            agreeRepository.save(agree);
+            if (!agree.getUser().getNickname().equals(post.getUser().getNickname())) {
+                notificationService.agreeNotification(agree.getAgreeId());
+            }
+            return new CommonResponse(CREATE_AGREE, null);
+        } else {
+            Agree agree = agreeRepository.findByUserAndPost(user, post).orElseThrow(
+                    () -> new AgreeException(ClientErrorCode.NO_AGREE));
+            agreeRepository.delete(agree);
+            return new CommonResponse(CANCEL_AGREE, null);
+        }
+    }
+
+    //'해결했어요' 버튼
+    @Transactional
+    public CommonResponse createDone(Long postId, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new PostException(ClientErrorCode.NO_POST));
+
+        if (!doneRepository.existsDoneByPostAndUser(post, user)) {
+            Done done = new Done(post, user);
+            doneRepository.save(done);
+            if (!done.getUser().getNickname().equals(post.getUser().getNickname())) {
+                notificationService.doneNotification(done.getDoneId());
+            }
+
+            // 해결됐어요 5개 되면 done => true
+            if (post.getPostDoneList().size() >= MAXIMUM_DONE) {
+                post.setDone(true);
+                notificationService.postDoneNotification(postId);
+                if (user.getEmail() == null) {
+                    return new CommonResponse<>(CREATE_DONE_MESSAGE);
+                } else {
+                    emailUtil.sendDoneEmail(post.getUser(), post);
+                }
+            }
+            return new CommonResponse<>(CREATE_DONE_MESSAGE);
+        } else {
+            Done done = doneRepository.findByPostAndUser(post, user).orElseThrow(
+                    () -> new DoneException(ClientErrorCode.NO_DONE));
+            doneRepository.delete(done);
+            return new CommonResponse<>(CANCEL_DONE_MESSAGE);
+        }
     }
 }

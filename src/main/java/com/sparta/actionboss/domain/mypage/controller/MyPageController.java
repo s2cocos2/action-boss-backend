@@ -1,11 +1,12 @@
 package com.sparta.actionboss.domain.mypage.controller;
 
-import com.sparta.actionboss.domain.auth.dto.LoginResponseDto;
-import com.sparta.actionboss.domain.mypage.dto.*;
+import com.sparta.actionboss.domain.mypage.dto.request.UpdateEmailRequestDto;
+import com.sparta.actionboss.domain.mypage.dto.request.UpdateNicknameRequestDto;
+import com.sparta.actionboss.domain.mypage.dto.request.UpdatePasswordRequestDto;
+import com.sparta.actionboss.domain.mypage.dto.response.MyPageInfoResponseDto;
 import com.sparta.actionboss.domain.mypage.service.MyPageService;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.security.UserDetailsImpl;
-import com.sparta.actionboss.global.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

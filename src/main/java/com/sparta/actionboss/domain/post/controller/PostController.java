@@ -1,8 +1,8 @@
 package com.sparta.actionboss.domain.post.controller;
 
 
-import com.sparta.actionboss.domain.post.dto.PostRequestDto;
-import com.sparta.actionboss.domain.post.dto.PostResponseDto;
+import com.sparta.actionboss.domain.post.dto.request.PostRequestDto;
+import com.sparta.actionboss.domain.post.dto.response.PostResponseDto;
 import com.sparta.actionboss.domain.post.service.PostService;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.security.UserDetailsImpl;
@@ -24,7 +24,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-
 
     // 민원글 작성
     @PostMapping("")
@@ -66,5 +65,15 @@ public class PostController {
         return new ResponseEntity<>(postService.deletePost(
                 postId,
                 userDetails.getUser()), HttpStatus.OK);
+    }
+
+    @PostMapping("/{postId}/agree")
+    public ResponseEntity<CommonResponse> agreePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return new ResponseEntity<>(postService.agreePost(postId, userDetails.getUser()), HttpStatus.OK);
+    }
+
+    @PostMapping("/{postId}/done")
+    public ResponseEntity<CommonResponse> createLike(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return new ResponseEntity<>(postService.createDone(postId, userDetails.getUser()), HttpStatus.OK);
     }
 }

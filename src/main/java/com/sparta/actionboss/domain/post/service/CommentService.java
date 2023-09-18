@@ -1,9 +1,9 @@
 package com.sparta.actionboss.domain.post.service;
 
-import com.sparta.actionboss.domain.auth.entity.User;
-import com.sparta.actionboss.domain.auth.entity.UserRoleEnum;
+import com.sparta.actionboss.domain.user.entity.User;
+import com.sparta.actionboss.domain.user.type.UserRoleEnum;
 import com.sparta.actionboss.domain.notification.service.NotificationService;
-import com.sparta.actionboss.domain.post.dto.CommentRequestDto;
+import com.sparta.actionboss.domain.post.dto.request.CommentRequestDto;
 import com.sparta.actionboss.domain.post.entity.Comment;
 import com.sparta.actionboss.domain.post.entity.Post;
 import com.sparta.actionboss.domain.post.repository.CommentRepository;

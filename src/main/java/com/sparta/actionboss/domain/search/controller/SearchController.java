@@ -1,6 +1,6 @@
 package com.sparta.actionboss.domain.search.controller;
 
-import com.sparta.actionboss.domain.search.dto.SearchListResponseDto;
+import com.sparta.actionboss.domain.search.dto.response.SearchListResponseDto;
 import com.sparta.actionboss.domain.search.service.SearchService;
 import com.sparta.actionboss.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;

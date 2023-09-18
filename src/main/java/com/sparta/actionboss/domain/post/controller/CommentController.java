@@ -1,6 +1,6 @@
 package com.sparta.actionboss.domain.post.controller;
 
-import com.sparta.actionboss.domain.post.dto.CommentRequestDto;
+import com.sparta.actionboss.domain.post.dto.request.CommentRequestDto;
 import com.sparta.actionboss.domain.post.service.CommentService;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.security.UserDetailsImpl;

@@ -2,8 +2,8 @@ package com.sparta.actionboss.domain.notification.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.sparta.actionboss.domain.auth.entity.User;
-import com.sparta.actionboss.domain.notification.dto.NotificationResponseDto;
+import com.sparta.actionboss.domain.user.entity.User;
+import com.sparta.actionboss.domain.notification.dto.response.NotificationResponseDto;
 import com.sparta.actionboss.domain.notification.entity.Notification;
 import com.sparta.actionboss.domain.notification.repository.NotificationRepository;
 import com.sparta.actionboss.domain.post.entity.Agree;

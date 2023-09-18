@@ -1,6 +1,6 @@
 package com.sparta.actionboss.domain.mypage.controller;
 
-import com.sparta.actionboss.domain.mypage.dto.PagingResponseDto;
+import com.sparta.actionboss.domain.mypage.dto.response.PagingResponseDto;
 import com.sparta.actionboss.domain.mypage.service.MyPagePostService;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.security.UserDetailsImpl;

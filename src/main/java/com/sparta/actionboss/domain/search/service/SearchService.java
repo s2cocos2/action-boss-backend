@@ -1,6 +1,6 @@
 package com.sparta.actionboss.domain.search.service;
 
-import com.sparta.actionboss.domain.search.dto.SearchListResponseDto;
+import com.sparta.actionboss.domain.search.dto.response.SearchListResponseDto;
 import com.sparta.actionboss.domain.search.entity.Address;
 import com.sparta.actionboss.domain.search.repository.SearchRepository;
 import com.sparta.actionboss.global.response.CommonResponse;

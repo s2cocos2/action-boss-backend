@@ -1,8 +1,8 @@
 package com.sparta.actionboss.domain.mypage.service;
 
-import com.sparta.actionboss.domain.auth.entity.User;
-import com.sparta.actionboss.domain.mypage.dto.MyPagePostsResponseDto;
-import com.sparta.actionboss.domain.mypage.dto.PagingResponseDto;
+import com.sparta.actionboss.domain.user.entity.User;
+import com.sparta.actionboss.domain.mypage.dto.response.MyPagePostsResponseDto;
+import com.sparta.actionboss.domain.mypage.dto.response.PagingResponseDto;
 import com.sparta.actionboss.domain.post.entity.Agree;
 import com.sparta.actionboss.domain.post.entity.Comment;
 import com.sparta.actionboss.domain.post.entity.Post;

@@ -1,6 +1,6 @@
 package com.sparta.actionboss.global.util;
 
-import com.sparta.actionboss.domain.auth.entity.User;
+import com.sparta.actionboss.domain.user.entity.User;
 import com.sparta.actionboss.domain.post.entity.Post;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;

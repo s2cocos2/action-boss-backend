@@ -1,8 +1,8 @@
 package com.sparta.actionboss.global.security;
 
 
-import com.sparta.actionboss.domain.auth.entity.User;
-import com.sparta.actionboss.domain.auth.entity.UserRoleEnum;
+import com.sparta.actionboss.domain.user.entity.User;
+import com.sparta.actionboss.domain.user.type.UserRoleEnum;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

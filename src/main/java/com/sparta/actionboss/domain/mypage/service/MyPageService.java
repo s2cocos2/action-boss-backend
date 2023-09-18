@@ -1,13 +1,13 @@
 package com.sparta.actionboss.domain.mypage.service;
 
-import com.sparta.actionboss.domain.auth.entity.RefreshToken;
-import com.sparta.actionboss.domain.auth.entity.User;
-import com.sparta.actionboss.domain.auth.repository.RefreshTokenRepository;
-import com.sparta.actionboss.domain.auth.repository.UserRepository;
-import com.sparta.actionboss.domain.mypage.dto.MyPageInfoResponseDto;
-import com.sparta.actionboss.domain.mypage.dto.UpdateEmailRequestDto;
-import com.sparta.actionboss.domain.mypage.dto.UpdateNicknameRequestDto;
-import com.sparta.actionboss.domain.mypage.dto.UpdatePasswordRequestDto;
+import com.sparta.actionboss.domain.user.entity.RefreshToken;
+import com.sparta.actionboss.domain.user.entity.User;
+import com.sparta.actionboss.domain.user.repository.RefreshTokenRepository;
+import com.sparta.actionboss.domain.user.repository.UserRepository;
+import com.sparta.actionboss.domain.mypage.dto.response.MyPageInfoResponseDto;
+import com.sparta.actionboss.domain.mypage.dto.request.UpdateEmailRequestDto;
+import com.sparta.actionboss.domain.mypage.dto.request.UpdateNicknameRequestDto;
+import com.sparta.actionboss.domain.mypage.dto.request.UpdatePasswordRequestDto;
 import com.sparta.actionboss.global.exception.MyPageException;
 import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
