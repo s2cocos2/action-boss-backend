@@ -10,9 +10,7 @@ import com.sparta.actionboss.domain.post.repository.AgreeRepository;
 import com.sparta.actionboss.domain.post.repository.DoneRepository;
 import com.sparta.actionboss.domain.post.repository.ImageRepository;
 import com.sparta.actionboss.domain.post.repository.PostRepository;
-import com.sparta.actionboss.global.exception.AgreeException;
-import com.sparta.actionboss.global.exception.DoneException;
-import com.sparta.actionboss.global.exception.PostException;
+import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.security.UserDetailsImpl;
@@ -62,10 +60,10 @@ public class PostService {
     ) throws IOException {
 
         if (limitImage(images)) {
-            throw new PostException(ClientErrorCode.UPLOAD_NO_IMAGE);
+            throw new CommonException(ClientErrorCode.UPLOAD_NO_IMAGE);
         }
         if (images.size() > MAXIMUM_IMAGES) {
-            throw new PostException(ClientErrorCode.UPLOAD_MAXIMUM_IMAGE);
+            throw new CommonException(ClientErrorCode.UPLOAD_MAXIMUM_IMAGE);
         }
 
         Post post = new Post(postRequestDto, user);
@@ -121,7 +119,7 @@ public class PostService {
         if (hasAuthority(post, user)) {
             post.update(postRequestDto);
         } else {
-            throw new PostException(ClientErrorCode.NO_PERMISSION_UPDATE);
+            throw new CommonException(ClientErrorCode.NO_PERMISSION_UPDATE);
         }
         return new CommonResponse(UPDATE_POST_MESSAGE);
     }
@@ -142,7 +140,7 @@ public class PostService {
                 s3Service.deleteFolder(images.get(0).getFolderName());
             }
         } else {
-            throw new PostException(ClientErrorCode.NO_PERMISSION_DELETE);
+            throw new CommonException(ClientErrorCode.NO_PERMISSION_DELETE);
         }
 
         return new CommonResponse(DELETE_POST_MESSAGE);
@@ -151,13 +149,13 @@ public class PostService {
     // 해당 게시글 찾기
     private Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> new PostException(ClientErrorCode.NO_POST));
+                () -> new CommonException(ClientErrorCode.NO_POST));
     }
 
     public List<Image> findImagesByPost(Long postId) {
         List<Image> images = imageRepository.findImagesByPostId(postId);
         if (images.isEmpty()) {
-            throw new PostException(ClientErrorCode.NO_POST);
+            throw new CommonException(ClientErrorCode.NO_POST);
         }
         return images;
     }
@@ -201,7 +199,7 @@ public class PostService {
     //'나도 불편해요' 버튼
     public CommonResponse agreePost(Long postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new AgreeException(ClientErrorCode.NO_POST));
+                () -> new CommonException(ClientErrorCode.NO_POST));
 
         if (!agreeRepository.existsAgreeByUserAndPost(user, post)) {
             Agree agree = new Agree(user, post);
@@ -212,7 +210,7 @@ public class PostService {
             return new CommonResponse(CREATE_AGREE, null);
         } else {
             Agree agree = agreeRepository.findByUserAndPost(user, post).orElseThrow(
-                    () -> new AgreeException(ClientErrorCode.NO_AGREE));
+                    () -> new CommonException(ClientErrorCode.NO_AGREE));
             agreeRepository.delete(agree);
             return new CommonResponse(CANCEL_AGREE, null);
         }
@@ -222,7 +220,7 @@ public class PostService {
     @Transactional
     public CommonResponse createDone(Long postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new PostException(ClientErrorCode.NO_POST));
+                () -> new CommonException(ClientErrorCode.NO_POST));
 
         if (!doneRepository.existsDoneByPostAndUser(post, user)) {
             Done done = new Done(post, user);
@@ -244,7 +242,7 @@ public class PostService {
             return new CommonResponse<>(CREATE_DONE_MESSAGE);
         } else {
             Done done = doneRepository.findByPostAndUser(post, user).orElseThrow(
-                    () -> new DoneException(ClientErrorCode.NO_DONE));
+                    () -> new CommonException(ClientErrorCode.NO_DONE));
             doneRepository.delete(done);
             return new CommonResponse<>(CANCEL_DONE_MESSAGE);
         }

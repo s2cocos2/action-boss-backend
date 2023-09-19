@@ -8,7 +8,7 @@ import com.sparta.actionboss.domain.mypage.dto.response.MyPageInfoResponseDto;
 import com.sparta.actionboss.domain.mypage.dto.request.UpdateEmailRequestDto;
 import com.sparta.actionboss.domain.mypage.dto.request.UpdateNicknameRequestDto;
 import com.sparta.actionboss.domain.mypage.dto.request.UpdatePasswordRequestDto;
-import com.sparta.actionboss.global.exception.MyPageException;
+import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.util.JwtUtil;
@@ -33,7 +33,7 @@ public class MyPageService {
 
     public CommonResponse<MyPageInfoResponseDto> getUserInfo(User user) {
         User currentUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
-                ()-> new MyPageException(ClientErrorCode.NO_ACCOUNT));
+                ()-> new CommonException(ClientErrorCode.NO_ACCOUNT));
 
         String email = currentUser.getEmail();
         String nickname = currentUser.getNickname();
@@ -51,14 +51,14 @@ public class MyPageService {
             userRepository.save(user);
             return new CommonResponse(UPDATE_EMAIL);
         } else {
-            throw new MyPageException(ClientErrorCode.REGISTERED_EMAIL);
+            throw new CommonException(ClientErrorCode.REGISTERED_EMAIL);
         }
     }
 
     @Transactional
     public CommonResponse deleteAccount(User user) {
         User currentUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
-                ()-> new MyPageException(ClientErrorCode.NO_ACCOUNT));
+                ()-> new CommonException(ClientErrorCode.NO_ACCOUNT));
         userRepository.delete(currentUser);
         return new CommonResponse(DELETE_ACCOUNT);
     }
@@ -68,7 +68,7 @@ public class MyPageService {
         String newNickname = requestDto.getNickname();
 
         if(userRepository.findByNickname(newNickname).isPresent()){
-            throw new MyPageException(ClientErrorCode.DUPLICATE_NICKNAME);
+            throw new CommonException(ClientErrorCode.DUPLICATE_NICKNAME);
         }
 
         refreshTokenRepository.deleteByUserId(user.getUserId());
@@ -93,7 +93,7 @@ public class MyPageService {
         String newPassword = passwordEncoder.encode(requestDto.getPassword());
 
         userRepository.findByNickname(user.getNickname()).orElseThrow(
-                ()-> new MyPageException(ClientErrorCode.NO_ACCOUNT));
+                ()-> new CommonException(ClientErrorCode.NO_ACCOUNT));
 
         user.updatePassword(newPassword);
         userRepository.save(user);

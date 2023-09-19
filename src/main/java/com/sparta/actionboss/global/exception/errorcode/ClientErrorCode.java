@@ -27,8 +27,6 @@ public enum ClientErrorCode {
     NO_AGREE(HttpStatus.NOT_FOUND, "동의해요에 대한 정보가 존재하지 않습니다."),
     NO_DONE(HttpStatus.NOT_FOUND, "해결됐어요에 대한 정보가 존재하지 않습니다."),
 
-    NO_USER(HttpStatus.NOT_FOUND, "해당 사용자가 없습니다."),
-
     // Post
     UPLOAD_NO_IMAGE(HttpStatus.BAD_REQUEST, "이미지를 1장 이상 업로드 해주세요."),
     UPLOAD_MAXIMUM_IMAGE(HttpStatus.BAD_REQUEST, "최대 3장의 이미지만 업로드할 수 있습니다."),

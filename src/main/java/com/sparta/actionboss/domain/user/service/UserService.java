@@ -8,8 +8,7 @@ import com.sparta.actionboss.domain.user.type.UserRoleEnum;
 import com.sparta.actionboss.domain.user.repository.EmailRepository;
 import com.sparta.actionboss.domain.user.repository.RefreshTokenRepository;
 import com.sparta.actionboss.domain.user.repository.UserRepository;
-import com.sparta.actionboss.global.exception.LoginException;
-import com.sparta.actionboss.global.exception.SignupException;
+import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.util.EmailUtil;
@@ -53,7 +52,7 @@ public class UserService {
 
         //닉네임 중복확인
         if(checkNickname(nickname)){
-            throw new SignupException(ClientErrorCode.DUPLICATE_NICKNAME);
+            throw new CommonException(ClientErrorCode.DUPLICATE_NICKNAME);
         }
 
         long emailId = checkEmailSuccessKey(requestDto.getEmail(), requestDto.getSuccessKey());
@@ -63,7 +62,7 @@ public class UserService {
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin()) {
             if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
-                throw new SignupException(ClientErrorCode.INVALID_ADMIN_TOKEN);
+                throw new CommonException(ClientErrorCode.INVALID_ADMIN_TOKEN);
             }
             role = UserRoleEnum.ADMIN;
         }
@@ -71,7 +70,7 @@ public class UserService {
         User user = new User(nickname, password, email, role);
         User savedUser =  userRepository.save(user);
         if(savedUser == null){
-            throw new SignupException(ClientErrorCode.SIGNUP_FAILED);
+            throw new CommonException(ClientErrorCode.SIGNUP_FAILED);
         }
         return new CommonResponse(SIGNUP_SUCCESS);
     }
@@ -81,9 +80,9 @@ public class UserService {
     public CommonResponse login(LoginRequestDto requestDto, HttpServletResponse response){
 
         User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
-                new LoginException(ClientErrorCode.NO_ACCOUNT));
+                new CommonException(ClientErrorCode.NO_ACCOUNT));
         if(!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())){
-            throw new LoginException(ClientErrorCode.INVALID_PASSWORDS);
+            throw new CommonException(ClientErrorCode.INVALID_PASSWORDS);
         }
         String accessToken = jwtUtil.createAccessToken(user.getNickname(), user.getRole());
         String refreshToken = jwtUtil.createRefreshToken(user.getNickname());
@@ -108,7 +107,7 @@ public class UserService {
             if (jwtUtil.validateRefreshToken(refreshToken)) {
 
                 refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(
-                        ()-> new LoginException(ClientErrorCode.NO_REFRESHTOKEN));
+                        ()-> new CommonException(ClientErrorCode.NO_REFRESHTOKEN));
 
                 String nickname = jwtUtil.getUserInfoFromRefreshToken(refreshToken);
 
@@ -118,14 +117,14 @@ public class UserService {
                 return new CommonResponse(CREATE_REFRESHTOKEN);
             }
         }
-        throw new LoginException(ClientErrorCode.INVALID_REFRESHTOKEN);
+        throw new CommonException(ClientErrorCode.INVALID_REFRESHTOKEN);
     }
 
     @Transactional(readOnly = true)
     public CommonResponse checkNickname(CheckNicknameRequestDto requestDto) {
         String nickname = requestDto.getNickname();
         if (checkNickname(nickname)) {
-            throw new SignupException(ClientErrorCode.DUPLICATE_NICKNAME);
+            throw new CommonException(ClientErrorCode.DUPLICATE_NICKNAME);
         }
         return new CommonResponse(AVAILABLE_NICKNAME);
     }
@@ -134,7 +133,7 @@ public class UserService {
     public CommonResponse sendEmail(SendEmailRequestDto requestDto) {
 
         userRepository.findByEmail(requestDto.getEmail()).ifPresent(existingUser -> {
-            throw new SignupException(ClientErrorCode.DUPLICATE_EMAIL);
+            throw new CommonException(ClientErrorCode.DUPLICATE_EMAIL);
         });
 
         Optional<Email> email = emailRepository.findByEmail(requestDto.getEmail());
@@ -145,8 +144,8 @@ public class UserService {
 
         try{
             emailUtil.sendEmail(requestDto.getEmail(), successKey);
-        } catch (SignupException e) {
-            throw new SignupException(ClientErrorCode.EMAIL_SENDING_FAILED);
+        } catch (CommonException e) {
+            throw new CommonException(ClientErrorCode.EMAIL_SENDING_FAILED);
         }
         if (email.isEmpty()) {
             emailRepository.save(Email.builder()
@@ -167,9 +166,9 @@ public class UserService {
 
     private long checkEmailSuccessKey(String requestEmail, String successKey) {
         Email email = emailRepository.findByEmail(requestEmail).orElseThrow(
-                ()-> new LoginException(ClientErrorCode.NO_ACCOUNT));
+                ()-> new CommonException(ClientErrorCode.NO_ACCOUNT));
         if(!email.getSuccessKey().equals(successKey)){
-            throw new SignupException(ClientErrorCode.EMAIL_AUTHENTICATION_FAILED);
+            throw new CommonException(ClientErrorCode.EMAIL_AUTHENTICATION_FAILED);
         }
         return email.getId();
     }

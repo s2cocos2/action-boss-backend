@@ -6,7 +6,7 @@ import com.sparta.actionboss.domain.post.dto.response.PostListResponseDto;
 import com.sparta.actionboss.domain.post.dto.response.PostModalResponseDto;
 import com.sparta.actionboss.domain.post.entity.Post;
 import com.sparta.actionboss.domain.post.repository.PostRepository;
-import com.sparta.actionboss.global.exception.PostException;
+import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
 import jakarta.persistence.EntityManager;
@@ -81,7 +81,7 @@ public class MainPageService {
 
     public CommonResponse<PostModalResponseDto> getModalPost(Long postId) {
         Post findPost = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException(ClientErrorCode.NO_POST));
+                .orElseThrow(() -> new CommonException(ClientErrorCode.NO_POST));
 
         String imageUrl = s3Url + "/images/" + findPost.getImageList().get(0).getFolderName() + "/" + findPost.getImageList().get(0).getImageName();
 

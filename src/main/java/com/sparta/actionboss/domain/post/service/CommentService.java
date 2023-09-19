@@ -8,8 +8,7 @@ import com.sparta.actionboss.domain.post.entity.Comment;
 import com.sparta.actionboss.domain.post.entity.Post;
 import com.sparta.actionboss.domain.post.repository.CommentRepository;
 import com.sparta.actionboss.domain.post.repository.PostRepository;
-import com.sparta.actionboss.global.exception.CommentException;
-import com.sparta.actionboss.global.exception.PostException;
+import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +46,7 @@ public class CommentService {
         if (hasAuthority(comment, user)) {
             commentRepository.delete(comment);
         } else {
-            throw new CommentException(ClientErrorCode.NO_PERMISSION_COMMENT_DELETE);
+            throw new CommonException(ClientErrorCode.NO_PERMISSION_COMMENT_DELETE);
         }
         return new CommonResponse(DELETE_COMMENT_MESSAGE);
     }
@@ -60,14 +59,14 @@ public class CommentService {
     // Post 있는지 확인
     private Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> new PostException(ClientErrorCode.NO_POST));
+                () -> new CommonException(ClientErrorCode.NO_POST));
     }
 
 
     // Comment 있는지 확인
     private Comment findComment(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(
-                () -> new CommentException(ClientErrorCode.NO_COMMENT));
+                () -> new CommonException(ClientErrorCode.NO_COMMENT));
     }
 
     // 댓글 삭제 권한 확인

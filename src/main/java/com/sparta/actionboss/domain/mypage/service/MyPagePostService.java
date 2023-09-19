@@ -9,7 +9,7 @@ import com.sparta.actionboss.domain.post.entity.Post;
 import com.sparta.actionboss.domain.post.repository.AgreeRepository;
 import com.sparta.actionboss.domain.post.repository.CommentRepository;
 import com.sparta.actionboss.domain.post.repository.PostRepository;
-import com.sparta.actionboss.global.exception.PostException;
+import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class MyPagePostService {
         List<MyPagePostsResponseDto> myPagePostsResponseDtoList = new ArrayList<>();
         for (Agree agree : agrees) {
             Post post = postRepository.findById(agree.getPost().getPostId()).orElseThrow(
-                    () -> new PostException(ClientErrorCode.NO_POST));
+                    () -> new CommonException(ClientErrorCode.NO_POST));
             agreesPosts.add(post);
             myPagePostsResponseDtoList.add(new MyPagePostsResponseDto(post, agree));
         }
@@ -60,7 +60,7 @@ public class MyPagePostService {
         List<MyPagePostsResponseDto> myPagePostsResponseDtoList = new ArrayList<>();
         for (Comment comment : comments) {
             Post post = postRepository.findById(comment.getPost().getPostId()).orElseThrow(
-                    () -> new PostException(ClientErrorCode.NO_POST));
+                    () -> new CommonException(ClientErrorCode.NO_POST));
             commentPosts.add(post);
             myPagePostsResponseDtoList.add(new MyPagePostsResponseDto(post, comment));
         }

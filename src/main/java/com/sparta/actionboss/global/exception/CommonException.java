@@ -6,8 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class CommentException extends RuntimeException {
+public class CommonException extends RuntimeException{
 
     private final ClientErrorCode errorCode;
-
 }

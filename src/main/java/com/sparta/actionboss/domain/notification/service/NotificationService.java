@@ -95,7 +95,7 @@ public class NotificationService {
     // 댓글 알림
     public void commentNotification(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new CommentException(ClientErrorCode.NO_COMMENT));
+                () -> new CommonException(ClientErrorCode.NO_COMMENT));
         Long postUserId = comment.getPost().getUser().getUserId();
         String actor = comment.getUser().getNickname();
         String title = comment.getPost().getTitle();
@@ -133,7 +133,7 @@ public class NotificationService {
     // "나도 불편해요" 알림
     public void agreeNotification(Long agreeId) {
         Agree agree = agreeRepository.findById(agreeId).orElseThrow(
-                () -> new AgreeException(ClientErrorCode.NO_AGREE));
+                () -> new CommonException(ClientErrorCode.NO_AGREE));
         Long postUserId = agree.getPost().getUser().getUserId();
         String actor = agree.getUser().getNickname();
         String title = agree.getPost().getTitle();
@@ -169,7 +169,7 @@ public class NotificationService {
     // "해결된 민원이에요" 알림
     public void doneNotification(Long doneId) {
         Done done = postDoneRepository.findById(doneId).orElseThrow(
-                () -> new DoneException(ClientErrorCode.NO_DONE));
+                () -> new CommonException(ClientErrorCode.NO_DONE));
         Long postUserId = done.getPost().getUser().getUserId();
         String actor = done.getUser().getNickname();
         String title = done.getPost().getTitle();
@@ -206,7 +206,7 @@ public class NotificationService {
     // 해결된 게시글이에요 알림
     public void postDoneNotification(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException(ClientErrorCode.NO_POST));
+                .orElseThrow(() -> new CommonException(ClientErrorCode.NO_POST));
         Long postUserId = post.getUser().getUserId();
         String title = post.getTitle();
         boolean postDone = post.isDone();
@@ -314,11 +314,11 @@ public class NotificationService {
     @Transactional
     public CommonResponse changeReadStatus(Long notificationId, User user) {
         Notification notification = notificationRepository.findById(notificationId).orElseThrow(
-                () -> new NotificationException(ClientErrorCode.NO_NOTIFICATION));
+                () -> new CommonException(ClientErrorCode.NO_NOTIFICATION));
         if (notification.getRecipient().getNickname().equals(user.getNickname())) {
             notification.setRead();
         } else {
-            throw new NotificationException(ClientErrorCode.NO_REMISSION_READ);
+            throw new CommonException(ClientErrorCode.NO_REMISSION_READ);
         }
 
         return new CommonResponse<>(READ_NOTIFICATION);
