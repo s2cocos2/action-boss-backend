@@ -85,7 +85,7 @@ public class User extends Timestamped {
     }
 
     public void updateEmail(UpdateEmailRequestDto requestDto){
-        this.email = requestDto.getEmail();
+        this.email = requestDto.email();
     }
 
     public void updateNickname(String nickname){

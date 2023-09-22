@@ -28,7 +28,8 @@ public class MyPageController {
     }
 
     @PatchMapping("/updateEmail")
-    public ResponseEntity<CommonResponse> updateEmail(@RequestBody @Valid UpdateEmailRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<CommonResponse> updateEmail(@RequestBody @Valid UpdateEmailRequestDto requestDto,
+                                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
        return new ResponseEntity<>(myPageService.updateEmail(requestDto, userDetails.getUser()), HttpStatus.CREATED);
     }
 
@@ -38,12 +39,15 @@ public class MyPageController {
     }
 
     @PatchMapping("/updateNickname")
-    public ResponseEntity<CommonResponse> updateNickname(@RequestBody @Valid UpdateNicknameRequestDto requestDto, HttpServletResponse response, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<CommonResponse> updateNickname(@RequestBody @Valid UpdateNicknameRequestDto requestDto,
+                                                         HttpServletResponse response,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
         return new ResponseEntity<>(myPageService.updateNickname(requestDto, userDetails.getUser(), response), HttpStatus.CREATED);
     }
 
     @PatchMapping("/updatePassword")
-    public ResponseEntity<CommonResponse> updatePassword(@RequestBody @Valid UpdatePasswordRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<CommonResponse> updatePassword(@RequestBody @Valid UpdatePasswordRequestDto requestDto,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
         return new ResponseEntity<>(myPageService.updatePassword(requestDto, userDetails.getUser()), HttpStatus.CREATED);
     }
 }

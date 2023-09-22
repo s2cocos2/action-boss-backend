@@ -1,27 +1,25 @@
 package com.sparta.actionboss.domain.mypage.service;
 
+import com.sparta.actionboss.domain.mypage.dto.request.UpdateEmailRequestDto;
+import com.sparta.actionboss.domain.mypage.dto.request.UpdateNicknameRequestDto;
+import com.sparta.actionboss.domain.mypage.dto.request.UpdatePasswordRequestDto;
+import com.sparta.actionboss.domain.mypage.dto.response.MyPageInfoResponseDto;
 import com.sparta.actionboss.domain.user.entity.RefreshToken;
 import com.sparta.actionboss.domain.user.entity.User;
 import com.sparta.actionboss.domain.user.repository.RefreshTokenRepository;
 import com.sparta.actionboss.domain.user.repository.UserRepository;
-import com.sparta.actionboss.domain.mypage.dto.response.MyPageInfoResponseDto;
-import com.sparta.actionboss.domain.mypage.dto.request.UpdateEmailRequestDto;
-import com.sparta.actionboss.domain.mypage.dto.request.UpdateNicknameRequestDto;
-import com.sparta.actionboss.domain.mypage.dto.request.UpdatePasswordRequestDto;
 import com.sparta.actionboss.global.exception.CommonException;
-import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.sparta.actionboss.global.exception.errorcode.ClientErrorCode.*;
 import static com.sparta.actionboss.global.response.SuccessMessage.*;
 
-@Slf4j(topic = "mypage service")
 @Service
 @RequiredArgsConstructor
 public class MyPageService {
@@ -33,7 +31,7 @@ public class MyPageService {
 
     public CommonResponse<MyPageInfoResponseDto> getUserInfo(User user) {
         User currentUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
-                ()-> new CommonException(ClientErrorCode.NO_ACCOUNT));
+                ()-> new CommonException(NO_ACCOUNT));
 
         String email = currentUser.getEmail();
         String nickname = currentUser.getNickname();
@@ -51,24 +49,24 @@ public class MyPageService {
             userRepository.save(user);
             return new CommonResponse(UPDATE_EMAIL);
         } else {
-            throw new CommonException(ClientErrorCode.REGISTERED_EMAIL);
+            throw new CommonException(REGISTERED_EMAIL);
         }
     }
 
     @Transactional
     public CommonResponse deleteAccount(User user) {
         User currentUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
-                ()-> new CommonException(ClientErrorCode.NO_ACCOUNT));
+                ()-> new CommonException(NO_ACCOUNT));
         userRepository.delete(currentUser);
         return new CommonResponse(DELETE_ACCOUNT);
     }
 
     @Transactional
     public CommonResponse updateNickname(UpdateNicknameRequestDto requestDto, User user, HttpServletResponse response) {
-        String newNickname = requestDto.getNickname();
+        String newNickname = requestDto.nickname();
 
         if(userRepository.findByNickname(newNickname).isPresent()){
-            throw new CommonException(ClientErrorCode.DUPLICATE_NICKNAME);
+            throw new CommonException(DUPLICATE_NICKNAME);
         }
 
         refreshTokenRepository.deleteByUserId(user.getUserId());
@@ -90,10 +88,10 @@ public class MyPageService {
 
     @Transactional
     public CommonResponse updatePassword(UpdatePasswordRequestDto requestDto, User user) {
-        String newPassword = passwordEncoder.encode(requestDto.getPassword());
+        String newPassword = passwordEncoder.encode(requestDto.password());
 
         userRepository.findByNickname(user.getNickname()).orElseThrow(
-                ()-> new CommonException(ClientErrorCode.NO_ACCOUNT));
+                ()-> new CommonException(NO_ACCOUNT));
 
         user.updatePassword(newPassword);
         userRepository.save(user);
