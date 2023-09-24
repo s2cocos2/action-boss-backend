@@ -42,15 +42,45 @@ public class JwtUtil {
         refreshTokenKey = Keys.hmacShaKeyFor(refreshTokenBytes);
     }
 
+//    // 토큰 생성
+//    public String createAccessToken(String nickname, UserRoleEnum role) {
+//        Date date = new Date();
+//
+//        long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+//
+//        return BEARER_PREFIX +
+//                Jwts.builder()
+//                        .setSubject(nickname)
+//                        .claim(AUTHORIZATION_KEY, role)
+//                        .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+//                        .setIssuedAt(date)
+//                        .signWith(accessTokenKey, signatureAlgorithm)
+//                        .compact();
+//    }
+//
+//    public String createRefreshToken(String nickname) {
+//        Date date = new Date();
+//
+//        long TOKEN_TIME = 7 * 24 * 60 * 60 * 1000L;   //일주일
+//
+//        return BEARER_PREFIX +
+//                Jwts.builder()
+//                        .setSubject(nickname)
+//                        .setExpiration(new Date(date.getTime() + TOKEN_TIME))
+//                        .setIssuedAt(date)
+//                        .signWith(refreshTokenKey, signatureAlgorithm)
+//                        .compact();
+//    }
+
     // 토큰 생성
-    public String createAccessToken(String nickname, UserRoleEnum role) {
+    public String createAccessToken(Long userId, UserRoleEnum role) {
         Date date = new Date();
 
         long TOKEN_TIME = 60 * 60 * 1000L; // 60분
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(nickname)
+                        .setSubject(userId.toString())
                         .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
@@ -58,14 +88,14 @@ public class JwtUtil {
                         .compact();
     }
 
-    public String createRefreshToken(String nickname) {
+    public String createRefreshToken(Long userId) {
         Date date = new Date();
 
         long TOKEN_TIME = 7 * 24 * 60 * 60 * 1000L;   //일주일
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(nickname)
+                        .setSubject(userId.toString())
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(refreshTokenKey, signatureAlgorithm)
@@ -131,7 +161,10 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token).getBody();
     }
 
-    public String getUserInfoFromRefreshToken(String token){
-        return Jwts.parserBuilder().setSigningKey(refreshTokenKey).build().parseClaimsJws(token).getBody().getSubject();
+    public Long getUserInfoFromRefreshToken(String token){
+        return Long.parseLong(Jwts.parserBuilder().setSigningKey(refreshTokenKey).build().parseClaimsJws(token).getBody().getSubject());
     }
+//    public String getUserInfoFromRefreshToken(String token){
+//        return Jwts.parserBuilder().setSigningKey(refreshTokenKey).build().parseClaimsJws(token).getBody().getSubject();
+//    }
 }

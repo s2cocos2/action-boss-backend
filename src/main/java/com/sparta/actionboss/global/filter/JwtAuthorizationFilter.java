@@ -1,7 +1,7 @@
 package com.sparta.actionboss.global.filter;
 
 
-import com.sparta.actionboss.global.security.UserDetailsServiceImpl;
+import com.sparta.actionboss.global.security.UserDetailsService;
 import com.sparta.actionboss.global.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -27,7 +27,7 @@ import static com.sparta.actionboss.global.util.JwtUtil.AUTHORIZATION_ACCESS;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
@@ -56,17 +56,31 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(req, res);
     }
 
+//    // 인증 처리
+//    public void setAuthentication(String nickname) {
+//        SecurityContext context = SecurityContextHolder.createEmptyContext();
+//        Authentication authentication = createAuthentication(nickname);
+//        context.setAuthentication(authentication);
+//        SecurityContextHolder.setContext(context);
+//    }
+//
+//    // 인증 객체 생성
+//    private Authentication createAuthentication(String nickname) {
+//        UserDetails userDetails = userDetailsService.loadUserByNickname(nickname);
+//        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//    }
+
     // 인증 처리
-    public void setAuthentication(String nickname) {
+    public void setAuthentication(String userId) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = createAuthentication(nickname);
+        Authentication authentication = createAuthentication(userId);
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
     }
 
     // 인증 객체 생성
-    private Authentication createAuthentication(String nickname) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(nickname);
+    private Authentication createAuthentication(String userId) {
+        UserDetails userDetails = userDetailsService.loadUserByUserId(userId);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }

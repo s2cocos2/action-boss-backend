@@ -1,7 +1,7 @@
 package com.sparta.actionboss.global.config;
 
 import com.sparta.actionboss.global.filter.JwtAuthorizationFilter;
-import com.sparta.actionboss.global.security.UserDetailsServiceImpl;
+import com.sparta.actionboss.global.security.UserDetailsService;
 import com.sparta.actionboss.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -29,7 +29,7 @@ public class WebSecurityConfig {
 
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

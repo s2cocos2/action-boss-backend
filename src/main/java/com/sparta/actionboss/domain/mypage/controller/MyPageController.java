@@ -40,9 +40,8 @@ public class MyPageController {
 
     @PatchMapping("/updateNickname")
     public ResponseEntity<CommonResponse> updateNickname(@RequestBody @Valid UpdateNicknameRequestDto requestDto,
-                                                         HttpServletResponse response,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return new ResponseEntity<>(myPageService.updateNickname(requestDto, userDetails.getUser(), response), HttpStatus.CREATED);
+        return new ResponseEntity<>(myPageService.updateNickname(requestDto, userDetails.getUser()), HttpStatus.CREATED);
     }
 
     @PatchMapping("/updatePassword")

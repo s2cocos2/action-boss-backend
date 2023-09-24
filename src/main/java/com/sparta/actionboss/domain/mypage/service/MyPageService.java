@@ -62,27 +62,14 @@ public class MyPageService {
     }
 
     @Transactional
-    public CommonResponse updateNickname(UpdateNicknameRequestDto requestDto, User user, HttpServletResponse response) {
+    public CommonResponse updateNickname(UpdateNicknameRequestDto requestDto, User user) {
         String newNickname = requestDto.nickname();
 
         if(userRepository.findByNickname(newNickname).isPresent()){
             throw new CommonException(DUPLICATE_NICKNAME);
         }
-
-        refreshTokenRepository.deleteByUserId(user.getUserId());
-
-        String accessToken = jwtUtil.createAccessToken(newNickname, user.getRole());
-        String refreshToken = jwtUtil.createRefreshToken(newNickname);
-
-        RefreshToken refreshTokenEntity = new RefreshToken(refreshToken.substring(7), user.getUserId());
-        refreshTokenRepository.save(refreshTokenEntity);
-
         user.updateNickname(newNickname);
         userRepository.save(user);
-
-        response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, accessToken);
-        response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, refreshToken);
-
         return new CommonResponse(UPDATE_NICKNAME);
     }
 
