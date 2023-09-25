@@ -21,3 +21,9 @@ public class KakaoUserInfoDto {
         this.nickname = nickname;
     }
 }
+//public record KakaoUserInfoDto(
+//        Long id,
+//        String nickname,
+//        String email
+//) {
+//}

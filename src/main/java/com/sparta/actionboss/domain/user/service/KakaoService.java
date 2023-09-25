@@ -62,7 +62,6 @@ public class KakaoService {
         String createRefreshToken = jwtUtil.createRefreshToken(kakaoUser.getUserId());
 
         refreshTokenRepository.deleteByUserId(kakaoUser.getUserId());
-
         RefreshToken refreshTokenEntity = new RefreshToken(createRefreshToken.substring(7), kakaoUser.getUserId());
         refreshTokenRepository.save(refreshTokenEntity);
 
@@ -71,6 +70,7 @@ public class KakaoService {
 
         return new CommonResponse(LOGIN_SUCCESS);
     }
+
 
     private String getToken(String code) throws JsonProcessingException {
         log.info("인가코드 : " + code);
@@ -109,6 +109,7 @@ public class KakaoService {
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         return jsonNode.get("access_token").asText();
     }
+
 
     private KakaoUserInfoDto getKakaoUserInfo(String accessToken) throws JsonProcessingException {
         log.info("accessToken : " + accessToken);
@@ -153,17 +154,15 @@ public class KakaoService {
         }
     }
 
+
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {
         Long kakaoId = kakaoUserInfo.getId();
         User kakaoUser = userRepository.findByKakaoId(kakaoId).orElse(null);
 
         if (kakaoUser == null) {
-
             String nickname = kakaoUserInfo.getNickname() + "_KAKAO" + kakaoId;
-
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
-
             String kakaoEmail = kakaoUserInfo.getEmail();
 
             if(kakaoEmail != null){

@@ -27,16 +27,12 @@ public class MyPageService {
     public CommonResponse<MyPageInfoResponseDto> getUserInfo(User user) {
         User currentUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
                 ()-> new CommonException(NO_ACCOUNT));
-
-        String email = currentUser.getEmail();
+        String email = currentUser.getEmail() != null ? currentUser.getEmail() : "";
         String nickname = currentUser.getNickname();
-
-        if(email == null){
-            email = "";
-        }
         MyPageInfoResponseDto responseDto = new MyPageInfoResponseDto(email, nickname);
         return new CommonResponse(GET_MYPAGE, responseDto);
     }
+
 
     public CommonResponse updateEmail(UpdateEmailRequestDto requestDto, User user) {
         if(user.getEmail() == null){
@@ -55,9 +51,9 @@ public class MyPageService {
         return new CommonResponse(DELETE_ACCOUNT);
     }
 
+
     public CommonResponse updateNickname(UpdateNicknameRequestDto requestDto, User user) {
         String newNickname = requestDto.nickname();
-
         if(userRepository.findByNickname(newNickname).isPresent()){
             throw new CommonException(DUPLICATE_NICKNAME);
         }
@@ -66,12 +62,11 @@ public class MyPageService {
         return new CommonResponse(UPDATE_NICKNAME);
     }
 
+
     public CommonResponse updatePassword(UpdatePasswordRequestDto requestDto, User user) {
         String newPassword = passwordEncoder.encode(requestDto.password());
-
         userRepository.findByNickname(user.getNickname()).orElseThrow(
                 ()-> new CommonException(NO_ACCOUNT));
-
         user.updatePassword(newPassword);
         userRepository.save(user);
         return new CommonResponse(UPDATE_PASSWORD);

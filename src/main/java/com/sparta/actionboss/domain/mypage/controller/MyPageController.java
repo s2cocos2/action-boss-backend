@@ -7,7 +7,6 @@ import com.sparta.actionboss.domain.mypage.dto.response.MyPageInfoResponseDto;
 import com.sparta.actionboss.domain.mypage.service.MyPageService;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.security.UserDetailsImpl;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.sparta.actionboss.global.exception.errorcode.ClientErrorCode.*;
 import static com.sparta.actionboss.global.response.SuccessMessage.*;
 
 @Service
@@ -60,10 +61,10 @@ public class PostService {
     ) throws IOException {
 
         if (limitImage(images)) {
-            throw new CommonException(ClientErrorCode.UPLOAD_NO_IMAGE);
+            throw new CommonException(UPLOAD_NO_IMAGE);
         }
         if (images.size() > MAXIMUM_IMAGES) {
-            throw new CommonException(ClientErrorCode.UPLOAD_MAXIMUM_IMAGE);
+            throw new CommonException(UPLOAD_MAXIMUM_IMAGE);
         }
 
         Post post = new Post(postRequestDto, user);
@@ -119,7 +120,7 @@ public class PostService {
         if (hasAuthority(post, user)) {
             post.update(postRequestDto);
         } else {
-            throw new CommonException(ClientErrorCode.NO_PERMISSION_UPDATE);
+            throw new CommonException(NO_PERMISSION_UPDATE);
         }
         return new CommonResponse(UPDATE_POST_MESSAGE);
     }
@@ -140,7 +141,7 @@ public class PostService {
                 s3Service.deleteFolder(images.get(0).getFolderName());
             }
         } else {
-            throw new CommonException(ClientErrorCode.NO_PERMISSION_DELETE);
+            throw new CommonException(NO_PERMISSION_DELETE);
         }
 
         return new CommonResponse(DELETE_POST_MESSAGE);
@@ -149,13 +150,13 @@ public class PostService {
     // 해당 게시글 찾기
     private Post findPost(Long postId) {
         return postRepository.findById(postId).orElseThrow(
-                () -> new CommonException(ClientErrorCode.NO_POST));
+                () -> new CommonException(NO_POST));
     }
 
     public List<Image> findImagesByPost(Long postId) {
         List<Image> images = imageRepository.findImagesByPostId(postId);
         if (images.isEmpty()) {
-            throw new CommonException(ClientErrorCode.NO_POST);
+            throw new CommonException(NO_POST);
         }
         return images;
     }
@@ -199,7 +200,7 @@ public class PostService {
     //'나도 불편해요' 버튼
     public CommonResponse agreePost(Long postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new CommonException(ClientErrorCode.NO_POST));
+                () -> new CommonException(NO_POST));
 
         if (!agreeRepository.existsAgreeByUserAndPost(user, post)) {
             Agree agree = new Agree(user, post);
@@ -207,12 +208,12 @@ public class PostService {
             if (!agree.getUser().getNickname().equals(post.getUser().getNickname())) {
                 notificationService.agreeNotification(agree.getAgreeId());
             }
-            return new CommonResponse(CREATE_AGREE, null);
+            return new CommonResponse(CREATE_AGREE);
         } else {
             Agree agree = agreeRepository.findByUserAndPost(user, post).orElseThrow(
-                    () -> new CommonException(ClientErrorCode.NO_AGREE));
+                    () -> new CommonException(NO_AGREE));
             agreeRepository.delete(agree);
-            return new CommonResponse(CANCEL_AGREE, null);
+            return new CommonResponse(CANCEL_AGREE);
         }
     }
 
@@ -220,7 +221,7 @@ public class PostService {
     @Transactional
     public CommonResponse createDone(Long postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new CommonException(ClientErrorCode.NO_POST));
+                () -> new CommonException(NO_POST));
 
         if (!doneRepository.existsDoneByPostAndUser(post, user)) {
             Done done = new Done(post, user);
@@ -242,7 +243,7 @@ public class PostService {
             return new CommonResponse<>(CREATE_DONE_MESSAGE);
         } else {
             Done done = doneRepository.findByPostAndUser(post, user).orElseThrow(
-                    () -> new CommonException(ClientErrorCode.NO_DONE));
+                    () -> new CommonException(NO_DONE));
             doneRepository.delete(done);
             return new CommonResponse<>(CANCEL_DONE_MESSAGE);
         }

@@ -68,12 +68,14 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/agree")
-    public ResponseEntity<CommonResponse> agreePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<CommonResponse> agreePost(@PathVariable Long postId,
+                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
         return new ResponseEntity<>(postService.agreePost(postId, userDetails.getUser()), HttpStatus.OK);
     }
 
     @PostMapping("/{postId}/done")
-    public ResponseEntity<CommonResponse> createLike(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<CommonResponse> createLike(@PathVariable Long postId,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return new ResponseEntity<>(postService.createDone(postId, userDetails.getUser()), HttpStatus.OK);
     }
 }
