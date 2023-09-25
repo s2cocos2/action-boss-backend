@@ -4,14 +4,10 @@ import com.sparta.actionboss.domain.mypage.dto.request.UpdateEmailRequestDto;
 import com.sparta.actionboss.domain.mypage.dto.request.UpdateNicknameRequestDto;
 import com.sparta.actionboss.domain.mypage.dto.request.UpdatePasswordRequestDto;
 import com.sparta.actionboss.domain.mypage.dto.response.MyPageInfoResponseDto;
-import com.sparta.actionboss.domain.user.entity.RefreshToken;
 import com.sparta.actionboss.domain.user.entity.User;
-import com.sparta.actionboss.domain.user.repository.RefreshTokenRepository;
 import com.sparta.actionboss.domain.user.repository.UserRepository;
 import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.response.CommonResponse;
-import com.sparta.actionboss.global.util.JwtUtil;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,11 +20,10 @@ import static com.sparta.actionboss.global.response.SuccessMessage.*;
 @RequiredArgsConstructor
 public class MyPageService {
 
-    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional(readOnly = true)
     public CommonResponse<MyPageInfoResponseDto> getUserInfo(User user) {
         User currentUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
                 ()-> new CommonException(NO_ACCOUNT));
@@ -53,7 +48,6 @@ public class MyPageService {
         }
     }
 
-    @Transactional
     public CommonResponse deleteAccount(User user) {
         User currentUser = userRepository.findByNickname(user.getNickname()).orElseThrow(
                 ()-> new CommonException(NO_ACCOUNT));
@@ -61,7 +55,6 @@ public class MyPageService {
         return new CommonResponse(DELETE_ACCOUNT);
     }
 
-    @Transactional
     public CommonResponse updateNickname(UpdateNicknameRequestDto requestDto, User user) {
         String newNickname = requestDto.nickname();
 
@@ -73,7 +66,6 @@ public class MyPageService {
         return new CommonResponse(UPDATE_NICKNAME);
     }
 
-    @Transactional
     public CommonResponse updatePassword(UpdatePasswordRequestDto requestDto, User user) {
         String newPassword = passwordEncoder.encode(requestDto.password());
 

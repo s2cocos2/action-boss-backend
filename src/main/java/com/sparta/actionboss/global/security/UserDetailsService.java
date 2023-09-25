@@ -13,21 +13,12 @@ import static com.sparta.actionboss.global.exception.errorcode.ClientErrorCode.*
 
 @Service
 @RequiredArgsConstructor
-//public class UserDetailsServiceImpl implements UserDetailsService {
 public class UserDetailsService {
 
     private final UserRepository userRepository;
 
-//    @Override
-//    public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
-//        User user = userRepository.findByNickname(nickname).orElseThrow(
-//                () -> new UsernameNotFoundException("Not Found " + nickname));
-//
-//        return new UserDetailsImpl(user);
-//    }
-
-    public UserDetails loadUserByUserId(String userId) throws CommonException {
-        User user = userRepository.findByUserId(Long.parseLong(userId)).orElseThrow(
+    public UserDetails loadUserByUserId(Long userId) throws CommonException {
+        User user = userRepository.findByUserId(userId).orElseThrow(
                 () -> new CommonException(NO_ACCOUNT));
 
         return new UserDetailsImpl(user);
