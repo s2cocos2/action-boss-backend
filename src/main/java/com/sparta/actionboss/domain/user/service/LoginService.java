@@ -32,6 +32,7 @@ public class LoginService {
     private final JwtUtil jwtUtil;
 
 
+    @Transactional
     public CommonResponse login(LoginRequestDto requestDto, HttpServletResponse response){
 
         User user = userRepository.findByEmail(requestDto.email()).orElseThrow(() ->
@@ -64,6 +65,8 @@ public class LoginService {
                         ()-> new CommonException(NO_REFRESHTOKEN));
 
                 Long userId = jwtUtil.getUserInfoFromRefreshToken(refreshToken);
+
+
                 String newAccessToken = jwtUtil.createAccessToken(userId, UserRoleEnum.USER);
 
                 response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, newAccessToken);
