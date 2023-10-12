@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.2'
     id 'io.spring.dependency-management' version '1.1.2'
+    id 'jacoco'
 }
 
 group = 'com.sparta'
@@ -46,4 +47,60 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+    reportsDirectory = layout.buildDirectory.dir("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = false;
+        csv.required = false;
+        html.outputLocation = layout.buildDirectory.dir("$buildDir/reports/html-report")
+    }
+
+    afterEvaluate {
+        getClassDirectories().setFrom(classDirectories.files.collect {
+            fileTree(dir: it, exclude:  [
+                    "**/*Controller*",
+                    "**/*Config*",
+                    "**/*ActionBossApplication*",
+                    "**/*Builder*",
+                    "**/*Exception*"
+            ])
+        })
+    }
+
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = "CLASS"
+
+            limit {
+                counter = "INSTRUCTION"
+                value = "COVEREDRATIO"
+                minimum = 0.80
+            }
+
+            limit {
+                counter = "BRANCH"
+                value = "COVEREDRATIO"
+                minimum = 0.80
+            }
+
+            excludes = [
+                    "**.*Builder",
+                    "**.ActionBossApplication",
+                    "**.*Config",
+                    "**.*Controller",
+                    "**.*Exception*"
+            ]
+        }
+    }
 }
