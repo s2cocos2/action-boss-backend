@@ -9,4 +9,9 @@ import lombok.RequiredArgsConstructor;
 public class CommonException extends RuntimeException{
 
     private final ClientErrorCode errorCode;
+
+    @Override
+    public String getMessage(){
+        return errorCode.getMsg();
+    }
 }

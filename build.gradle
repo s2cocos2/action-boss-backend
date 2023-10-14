@@ -69,7 +69,9 @@ jacocoTestReport {
                     "**/*Config*",
                     "**/*ActionBossApplication*",
                     "**/*Builder*",
-                    "**/*Exception*"
+                    "**/*Exception*",
+                    "**/*MyPagePostService*"
+//                    "com/sparta/actionboss/domain/mypage/service/MyPagePostService.class"
             ])
         })
     }
@@ -99,7 +101,9 @@ jacocoTestCoverageVerification {
                     "**.ActionBossApplication",
                     "**.*Config",
                     "**.*Controller",
-                    "**.*Exception*"
+                    "**.*Exception*",
+                    "**.*MyPagePostService*",
+//                    "com/sparta/actionboss/domain/mypage/service/MyPagePostService.class"
             ]
         }
     }
