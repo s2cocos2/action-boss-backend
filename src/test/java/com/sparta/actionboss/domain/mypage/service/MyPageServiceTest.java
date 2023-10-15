@@ -9,6 +9,7 @@ import com.sparta.actionboss.domain.user.repository.UserRepository;
 import com.sparta.actionboss.domain.user.type.UserRoleEnum;
 import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.response.CommonResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -32,14 +33,20 @@ class MyPageServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    MyPageService myPageService;
+
+    @BeforeEach
+    void setUp(){
+        myPageService = new MyPageService(userRepository, passwordEncoder);
+    }
+
     @Nested
     @DisplayName("마이페이지 조회")
-    class Test1{
+    class getUserInfoTest{
         @Test
         @DisplayName("마이페이지 조회 - 성공")
-        void test1(){
+        void userInfoSuccess(){
             //given
-            MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
             User user = new User("코코","abcd1234","coco@naver.com",UserRoleEnum.USER);
 
             given(userRepository.findByNickname(user.getNickname())).willReturn(Optional.of(user));
@@ -52,9 +59,8 @@ class MyPageServiceTest {
         }
         @Test
         @DisplayName("마이페이지 조회 - 실패")
-        void test2(){
+        void userInfoFail(){
             //given
-            MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
             User user = new User("코코","abcd1234","coco@naver.com",UserRoleEnum.USER);
 
             given(userRepository.findByNickname(user.getNickname())).willReturn(Optional.empty());
@@ -72,13 +78,12 @@ class MyPageServiceTest {
 
     @Nested
     @DisplayName("이메일 업데이트")
-    class Test2 {
+    class updateEmail {
         @Test
         @DisplayName("이메일 업데이트 - 성공")
-        void test1(){
+        void updateEmailSuccess(){
             //given
             UpdateEmailRequestDto requestDto = new UpdateEmailRequestDto("coco2@naver.com");
-            MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
             User user = new User("코코","abcd1234",UserRoleEnum.USER,1234L);
 
             //when
@@ -90,10 +95,9 @@ class MyPageServiceTest {
 
         @Test
         @DisplayName("이메일 업데이트 - 실패")
-        void test2(){
+        void updateEmailFail(){
             //given
             UpdateEmailRequestDto requestDto = new UpdateEmailRequestDto("coco@naver.com");
-            MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
             User user = new User("코코","abcd1234","coco@naver.com",UserRoleEnum.USER);
 
             //when
@@ -108,13 +112,12 @@ class MyPageServiceTest {
 
     @Nested
     @DisplayName("회원탈퇴")
-    class Test3{
+    class deleteAccount{
 
         @Test
         @DisplayName("회원탈퇴 - 성공")
-        void test1(){
+        void deleteAccountSuccess(){
             //given
-            MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
             User user = new User("코코","abcd1234","coco@naver.com",UserRoleEnum.USER);
 
             given(userRepository.findByNickname(user.getNickname())).willReturn(Optional.of(user));
@@ -128,9 +131,8 @@ class MyPageServiceTest {
 
         @Test
         @DisplayName("회원탈퇴 - 실패")
-        void test2(){
+        void deleteAccountFail(){
             //given
-            MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
             User user = new User("코코","abcd1234","coco@naver.com",UserRoleEnum.USER);
 
             given(userRepository.findByNickname(user.getNickname())).willReturn(Optional.empty());
@@ -147,14 +149,13 @@ class MyPageServiceTest {
 
     @Nested
     @DisplayName("닉네임 업데이트")
-    class test4{
+    class updateNickname{
 
         @Test
         @DisplayName("닉네임 업데이트 - 성공")
-        void test1(){
+        void updateNicknameSuccess(){
             //given
             UpdateNicknameRequestDto requestDto = new UpdateNicknameRequestDto("코코입니다");
-            MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
             User user = new User("코코","abcd1234","coco@naver.com",UserRoleEnum.USER);
 
             //when
@@ -166,10 +167,9 @@ class MyPageServiceTest {
 
         @Test
         @DisplayName("닉네임 업데이트 - 실패")
-        void test2(){
+        void updateNicknameFail(){
             //given
             UpdateNicknameRequestDto requestDto = new UpdateNicknameRequestDto("코코");
-            MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
             User user = new User("코코","abcd1234","coco@naver.com",UserRoleEnum.USER);
 
             given(userRepository.findByNickname(user.getNickname())).willReturn(Optional.of(user));
@@ -185,14 +185,13 @@ class MyPageServiceTest {
 
         @Nested
         @DisplayName("비밀번호 업데이트")
-        class test5{
+        class updatePassword{
 
             @Test
             @DisplayName("비밀번호 업데이트 - 성공")
-            void test1(){
+            void updatePasswordSuccess(){
                 //given
                 UpdatePasswordRequestDto requestDto = new UpdatePasswordRequestDto("abcd1212");
-                MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
                 User user = new User("코코","abcd1234","coco@naver.com",UserRoleEnum.USER);
 
                 given(userRepository.findByNickname(user.getNickname())).willReturn(Optional.of(user));
@@ -205,10 +204,9 @@ class MyPageServiceTest {
 
             @Test
             @DisplayName("비밀번호 업데이트 - 실패")
-            void test2(){
+            void updatePasswordFail(){
                 //given
                 UpdatePasswordRequestDto requestDto = new UpdatePasswordRequestDto("abcd1212");
-                MyPageService myPageService = new MyPageService(userRepository, passwordEncoder);
                 User user = new User("코코","abcd1234","coco@naver.com",UserRoleEnum.USER);
 
                 given(userRepository.findByNickname(user.getNickname())).willReturn(Optional.empty());
@@ -221,8 +219,6 @@ class MyPageServiceTest {
                 //then
                 assertEquals("가입되지 않은 계정입니다.", exception.getMessage());
             }
-
-
         }
     }
 }

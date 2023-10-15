@@ -73,7 +73,7 @@ public class SignUpService {
     }
 
 
-    private boolean existingNickname(String nickname){
+    public boolean existingNickname(String nickname){
         Optional<User> existingNickname = userRepository.findByNickname(nickname);
         if(existingNickname.isPresent()){
             return true;
@@ -115,7 +115,7 @@ public class SignUpService {
         return new CommonResponse(EMAIL_AUTHENTICATE_SUCCESS);
     }
 
-    private long checkEmailSuccessKey(String requestEmail, String successKey) {
+    public long checkEmailSuccessKey(String requestEmail, String successKey) {
         Email email = emailRepository.findByEmail(requestEmail).orElseThrow(
                 ()-> new CommonException(NO_ACCOUNT));
         if(!email.getSuccessKey().equals(successKey)){
