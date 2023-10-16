@@ -9,6 +9,7 @@ import com.sparta.actionboss.domain.post.entity.Post;
 import com.sparta.actionboss.domain.user.type.UserRoleEnum;
 import com.sparta.actionboss.global.entity.Timestamped;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -56,6 +57,15 @@ public class User extends Timestamped {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Agree> agreeList = new ArrayList<>();
+
+    public User(Long userId, String nickname, String password, String email, UserRoleEnum role, Long kakaoId) {
+        this.userId = userId;
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.kakaoId = kakaoId;
+    }
 
     public User(String nickname, String password, String email, UserRoleEnum role) {
         this.nickname = nickname;

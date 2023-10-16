@@ -56,20 +56,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(req, res);
     }
 
-//    // 인증 처리
-//    public void setAuthentication(String nickname) {
-//        SecurityContext context = SecurityContextHolder.createEmptyContext();
-//        Authentication authentication = createAuthentication(nickname);
-//        context.setAuthentication(authentication);
-//        SecurityContextHolder.setContext(context);
-//    }
-//
-//    // 인증 객체 생성
-//    private Authentication createAuthentication(String nickname) {
-//        UserDetails userDetails = userDetailsService.loadUserByNickname(nickname);
-//        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-//    }
-
     // 인증 처리
     public void setAuthentication(Long userId) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();

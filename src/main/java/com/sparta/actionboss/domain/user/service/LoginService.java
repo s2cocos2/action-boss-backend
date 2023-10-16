@@ -66,7 +66,6 @@ public class LoginService {
 
                 Long userId = jwtUtil.getUserInfoFromRefreshToken(refreshToken);
 
-
                 String newAccessToken = jwtUtil.createAccessToken(userId, UserRoleEnum.USER);
 
                 response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, newAccessToken);
