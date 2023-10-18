@@ -12,6 +12,7 @@ import com.sparta.actionboss.domain.user.type.UserRoleEnum;
 import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.exception.errorcode.ClientErrorCode;
 import com.sparta.actionboss.global.response.CommonResponse;
+import com.sparta.actionboss.global.response.SuccessMessage;
 import com.sparta.actionboss.global.util.EmailUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,7 +57,11 @@ class SignUpServiceTest {
         @DisplayName("회원가입 성공 - 일반회원")
         void signUpSuccess(){
             //given
-            SignupRequestDto requestDto = new SignupRequestDto("coco@naver.com", "abcd1234", "코코", "123456");
+            SignupRequestDto requestDto = new SignupRequestDto(
+                    "coco@naver.com",
+                    "abcd1234",
+                    "코코",
+                    "123456");
             String email = requestDto.getEmail();
             String password = passwordEncoder.encode(requestDto.getPassword());
             String nickname = requestDto.getNickname();
@@ -74,13 +78,20 @@ class SignUpServiceTest {
 
             //then
             assertEquals("회원가입에 성공하였습니다.", result.getMsg());
+            assertEquals(SuccessMessage.SIGNUP_SUCCESS, result.getMsg());
         }
 
         @Test
         @DisplayName("회원가입 성공 - admin")
         void signUpSuccess2(){
             //given
-            SignupRequestDto requestDto = new SignupRequestDto("coco@naver.com", "abcd1234", "코코", "123456",true,"AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC");
+            SignupRequestDto requestDto = new SignupRequestDto(
+                    "coco@naver.com",
+                    "abcd1234",
+                    "코코",
+                    "123456",
+                    true,
+                    "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC");
             String email = requestDto.getEmail();
             String password = passwordEncoder.encode(requestDto.getPassword());
             String nickname = requestDto.getNickname();
@@ -103,7 +114,11 @@ class SignUpServiceTest {
         @DisplayName("회원가입 실패 - 닉네임 중복")
         void signUpFail(){
             //given
-            SignupRequestDto requestDto = new SignupRequestDto("coco@naver.com", "abcd1234", "코코", "123456");
+            SignupRequestDto requestDto = new SignupRequestDto(
+                    "coco@naver.com",
+                    "abcd1234",
+                    "코코",
+                    "123456");
             String nickname = requestDto.getNickname();
 
             User existingUser = new User("코코","abcd1234","coco2@naver.com",UserRoleEnum.USER);
@@ -123,9 +138,16 @@ class SignUpServiceTest {
         @DisplayName("회원가입 실패 - admin 가입 시 토큰이 유효하지 않을 때")
         void signUpFail2(){
             //given
-            SignupRequestDto requestDto = new SignupRequestDto("coco@naver.com", "abcd1234", "코코", "123456",true,"abcd");
+            SignupRequestDto requestDto = new SignupRequestDto(
+                    "coco@naver.com",
+                    "abcd1234",
+                    "코코",
+                    "123456",
+                    true,
+                    "abcd");
 
-            given(emailRepository.findByEmail(requestDto.getEmail())).willReturn(Optional.of(new Email(1L, requestDto.getEmail(), requestDto.getSuccessKey())));
+            given(emailRepository.findByEmail(requestDto.getEmail()))
+                    .willReturn(Optional.of(new Email(1L, requestDto.getEmail(), requestDto.getSuccessKey())));
 
             //when
             Exception exception = assertThrows(CommonException.class,()->{
@@ -140,9 +162,14 @@ class SignUpServiceTest {
         @DisplayName("회원가입 실패 - 회원가입이 정상적으로 이루어지지 않을 때")
         void signUpFail3(){
             //given
-            SignupRequestDto requestDto = new SignupRequestDto("coco@naver.com", "abcd1234", "코코", "123456");
+            SignupRequestDto requestDto = new SignupRequestDto(
+                    "coco@naver.com",
+                    "abcd1234",
+                    "코코",
+                    "123456");
 
-            given(emailRepository.findByEmail(requestDto.getEmail())).willReturn(Optional.of(new Email(1L, requestDto.getEmail(), requestDto.getSuccessKey())));
+            given(emailRepository.findByEmail(requestDto.getEmail()))
+                    .willReturn(Optional.of(new Email(1L, requestDto.getEmail(), requestDto.getSuccessKey())));
             given(userRepository.save(any(User.class))).willReturn(null);
 
             //when
@@ -258,9 +285,10 @@ class SignUpServiceTest {
             SendEmailRequestDto requestDto = new SendEmailRequestDto("coco@naver.com");
 
             given(userRepository.findByEmail(requestDto.email())).willReturn(Optional.empty());
-            given(emailRepository.findByEmail(requestDto.email())).willReturn(Optional.of(new Email()));
+            given(emailRepository.findByEmail(requestDto.email())).willReturn(Optional.empty());
 
-            willThrow(new CommonException(ClientErrorCode.EMAIL_SENDING_FAILED)).given(emailUtil).sendEmail(anyString(),anyString());
+            willThrow(new CommonException(ClientErrorCode.EMAIL_SENDING_FAILED))
+                    .given(emailUtil).sendEmail(anyString(), anyString());
 
             //when
             Exception exception = assertThrows(CommonException.class, ()->{

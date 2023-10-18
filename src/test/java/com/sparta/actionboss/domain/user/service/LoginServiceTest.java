@@ -9,7 +9,6 @@ import com.sparta.actionboss.domain.user.type.UserRoleEnum;
 import com.sparta.actionboss.global.exception.CommonException;
 import com.sparta.actionboss.global.response.CommonResponse;
 import com.sparta.actionboss.global.util.JwtUtil;
-import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,13 +19,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.NestedTestConfiguration;
 
 import java.util.Optional;
 
 import static com.sparta.actionboss.global.util.JwtUtil.AUTHORIZATION_REFRESH;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class LoginServiceTest {

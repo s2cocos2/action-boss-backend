@@ -23,6 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpStatus.*;
 
 @ExtendWith(MockitoExtension.class)
 class MyPageServiceTest {
@@ -57,6 +58,7 @@ class MyPageServiceTest {
             //then
             assertEquals("마이페이지 조회에 성공하였습니다.", result.getMsg());
         }
+
         @Test
         @DisplayName("마이페이지 조회 - 실패")
         void userInfoFail(){
@@ -66,15 +68,15 @@ class MyPageServiceTest {
             given(userRepository.findByNickname(user.getNickname())).willReturn(Optional.empty());
 
             //when
-            Exception exception = assertThrows(CommonException.class, () -> {
+            CommonException exception = assertThrows(CommonException.class, () -> {
                 myPageService.getUserInfo(user);
             });
 
             //then
             assertEquals("가입되지 않은 계정입니다.", exception.getMessage());
+            assertEquals(NOT_FOUND, exception.getErrorCode().getStatusCode());
         }
     }
-
 
     @Nested
     @DisplayName("이메일 업데이트")

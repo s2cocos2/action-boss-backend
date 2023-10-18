@@ -31,12 +31,12 @@ class UserDetailsServiceTest {
     @Test
     @DisplayName("userId로 user찾기 - 성공")
     void loadUserByUserIdSuccess() throws CommonException {
-        //when
+        //given
         Long userId = 1l;
         User user = new User();
         given(userRepository.findByUserId(userId)).willReturn(Optional.of(user));
 
-        //given
+        //when
         UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUserId(userId);
 
         //then
@@ -46,11 +46,11 @@ class UserDetailsServiceTest {
     @Test
     @DisplayName("userId로 user찾기 - 실패")
     void loadUserByUserIdFail() throws CommonException {
-        //when
+        //given
         Long userId = 1l;
         given(userRepository.findByUserId(userId)).willReturn(Optional.empty());
 
-        //given
+        //when
         Exception exception = assertThrows(CommonException.class, ()->{
             userDetailsService.loadUserByUserId(userId);
         });

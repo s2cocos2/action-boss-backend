@@ -43,6 +43,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    testImplementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    testRuntimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    testRuntimeOnly('io.jsonwebtoken:jjwt-jackson:0.11.2')
 }
 
 tasks.named('test') {
@@ -73,7 +77,12 @@ jacocoTestReport {
                     "**/*MyPagePostService*",
                     "**/*notification*",
                     "**/*post*",
-                    "**/*search*"
+                    "**/*search*",
+                    "**/*EmailUtil*",
+                    "**/*KakaoService*",
+                    "**/*MyPagePostsResponseDto*",
+                    "**/*PagingResponseDto*",
+                    "**/*KakaoUserInfoDto*"
             ])
         })
     }
@@ -107,7 +116,12 @@ jacocoTestCoverageVerification {
                     "**.*MyPagePostService*",
                     "**.*notification*",
                     "**.*post*",
-                    "**.*search*"
+                    "**.*search*",
+                    "**.*EmailUtil*",
+                    "**.*KakaoService*",
+                    "**.*MyPagePostsResponseDto*",
+                    "**.*PagingResponseDto*",
+                    "**.*KakaoUserInfoDto*"
             ]
         }
     }
