@@ -2,6 +2,7 @@ package com.sparta.actionboss.domain.post.controller;
 
 
 import com.sparta.actionboss.domain.post.dto.request.PostRequestDto;
+import com.sparta.actionboss.domain.post.dto.response.PostListResponseDto;
 import com.sparta.actionboss.domain.post.dto.response.PostResponseDto;
 import com.sparta.actionboss.domain.post.service.PostService;
 import com.sparta.actionboss.global.response.CommonResponse;
@@ -25,7 +26,6 @@ public class PostController {
 
     private final PostService postService;
 
-    // 민원글 작성
     @PostMapping("")
     public ResponseEntity<CommonResponse> createPost(
             @RequestPart(name = "post") PostRequestDto postRequestDto,
@@ -37,15 +37,17 @@ public class PostController {
                 images, userDetails.getUser()),
                 HttpStatus.CREATED);
     }
+    @GetMapping("")
+    public ResponseEntity<CommonResponse<List<PostListResponseDto>>> getAllPost(@RequestParam("page") int page){
+        return new ResponseEntity<>(postService.getAllPost(page-1, 10), HttpStatus.OK);
+    }
 
-    // 민원글 상세 조회 (postId)
     @GetMapping("/{postId}")
     public ResponseEntity<CommonResponse<PostResponseDto>> getPost(@PathVariable Long postId) {
         return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
     }
 
 
-    // 민원글 수정
     @PutMapping("/{postId}")
     public ResponseEntity<CommonResponse> updatePost(
             @PathVariable Long postId,
@@ -56,7 +58,6 @@ public class PostController {
     }
 
 
-    // 민원글 삭제
     @DeleteMapping("/{postId}")
     public ResponseEntity<CommonResponse> deletePost(
             @PathVariable Long postId,

@@ -1,6 +1,7 @@
 package com.sparta.actionboss.domain.post.service;
 
 import com.sparta.actionboss.domain.notification.service.NotificationService;
+import com.sparta.actionboss.domain.post.dto.response.PostListResponseDto;
 import com.sparta.actionboss.domain.post.entity.*;
 import com.sparta.actionboss.domain.user.entity.User;
 import com.sparta.actionboss.domain.user.type.UserRoleEnum;
@@ -18,6 +19,10 @@ import com.sparta.actionboss.global.util.EmailUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,6 +33,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.sparta.actionboss.global.exception.errorcode.ClientErrorCode.*;
 import static com.sparta.actionboss.global.response.SuccessMessage.*;
@@ -82,6 +88,31 @@ public class PostService {
 
         return new CommonResponse(CREATE_POST_MESSAGE, new PostResponseDto(post.getPostId()));
     }
+
+    //게시글 전체 조회
+    @Transactional(readOnly = true)
+    public CommonResponse<List<PostListResponseDto>> getAllPost(int page, int size) {
+        Sort.Direction direction = Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, "modifiedAt");
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Post> postPage = postRepository.findAll(pageable);
+        List<PostListResponseDto> postListResponseDtos = postPage.getContent().stream()
+                .map(post -> {
+                    String thumbnail = null;
+                    List<Image> images = post.getImageList();
+                    if (!images.isEmpty()) {
+                        Image firstImage = images.get(0);  // 첫 번째 이미지를 가져옵니다.
+                        thumbnail = firstImage.getFolderName() + "/" + firstImage.getImageName();  // URL을 만듭니다.
+                    }
+                    return new PostListResponseDto(post.getPostId(), post.getTitle(), post.getAgreeCount(), post.getUser().getNickname(), post.getAddress(), thumbnail);
+                })
+                .collect(Collectors.toList());
+
+        return new CommonResponse<>(GET_POST_MESSAGE, postListResponseDtos);
+    }
+
+
 
     // 게시글 상세 조회
     public CommonResponse<PostResponseDto> getPost(Long postId) {

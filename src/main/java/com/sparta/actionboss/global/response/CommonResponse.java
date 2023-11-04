@@ -6,11 +6,14 @@ import lombok.Getter;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@AllArgsConstructor
 public class CommonResponse<T> {
     private String msg;
     private T data;
 
+    public CommonResponse(String msg, T data){
+        this.msg = msg;
+        this.data = data;
+    }
     public CommonResponse(String msg){
         this.msg = msg;
     }
